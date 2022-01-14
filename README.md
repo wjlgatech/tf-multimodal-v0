@@ -5,7 +5,7 @@
 To build a automated Tensorflow based multimodal classifier that consumes tabular data with cnt, cat, txt, img columns.
 
 ## Milestones
-- [5/5] build a working notebook with 1 sample dataset
+- [5/5] build a working [notebook](https://github.com/wjlgatech/tf-multimodal/blob/main/tf_multimodal.ipynb) with 1 sample dataset
 - [/5] test performance on other datasets
 - [/5] modularize it and put in .py
 - [/5] packaging it into a library
