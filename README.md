@@ -13,11 +13,25 @@ To build a automated Tensorflow based multimodal classifier that consumes tabula
 ## Features
 
 **Features Built**
-- [5/5] emb cnt_cols
+- [5/5] preprocess and encode cnt_cols: normalization and bucketization
 
-- [5/5] emb cat_cols
+- [5/5] preprocess and encode cat_cols for int_cat_cols and str_cat_cols
 
-- [5/5] emb txt_cols
+- [5/5] preprocess and encode txt_cols: implemented 2 methods: 1.LSTM 2.Bert
+
+- [5/5] preprocess and encode img_cols
+  - txt+img multimodal: 
+    - https://keras.io/examples/nlp/multimodal_entailment/
+
+- [5/5]**Situation**: How do I combine info from various dtype of data, given that each dtype have different number of columns (e.g. 5 cnt_cols, 10 cat_cols, 2 txt_cols, 2 img_cols),  and the embedding of each dtype column can be very different emb_width (e.g. con_cols have emb_width 1 vs. cat_col has emb_width 16). The info from col with narrow emb_width can be overwhelmed by the col with wide emb_width. **Solution**: instead of using simple concat, to add a `deep-wide module` where the deep layer squeeze the cols with dense representation (e.g. embedding with 16 cols) while the wide layer is to process the sparse cols. Then the output from deep-branch and the output from the wide-branch is combined. In this way, features of various embedding width are normalized so that their contribution can be backtracked and compared.
+  - keyref1: https://keras.io/examples/structured_data/wide_deep_cross_networks/
+  - keyref2: https://branyang.gitbooks.io/tfdocs/content/tutorials/wide_and_deep.html
+
+
+
+  - https://keras.io/examples/nlp/text_classification_with_transformer/
+
+
 
 - [5/5] automate the separation for cnt, cat, txt columns in df
 
@@ -25,21 +39,32 @@ To build a automated Tensorflow based multimodal classifier that consumes tabula
 
 - [5/5] allow txt_, cnt_, cat_cols interaction with deep cross module
 
+- [5/5] to accelerate hyperparameter tuning by a tf.keras-based module https://keras.io/keras_tuner/, build 3 tuners: randomSearch, Bayesian, Hyperband.
+
+- [5/5] in order to experiment various downstream learning architectures (e.g. simple, deep-wide-cross, dcn, two tower), simplify and modularize the preprocessing and encoding of cnt, cat, txt, img.
+
+- [5/5] to automatically switch between binary classification and multiclass classification, build unified deep learning utilities, including data-preprocessing for label column (multi-hot-encoding), loss function (tf.keras.losses.CategoricalCrossentropy) and custom metrics (accuracy, F1, roc-auc, pr-auc, confusion matrix, avg_precision, avg_recall)
+
+- [5/5] wide, deep, cross on concat_emb
+https://keras.io/examples/structured_data/wide_deep_cross_networks/
+  - cat dense emb VS cat sparse emb
+  
 **Features to Build**
 
-- [/5] trace feature contribution/importance with col_emb_ls
+- [/5] to do tf-model-specific Feature selection, use grn and vsn: https://keras.io/examples/structured_data/classification_with_grn_and_vsn/
 
-- [/5] tf_clf model based feature selection
+- [/5] trace feature contribution on both population-level and individual-sample-level, use Shap with col_emb_ls
 
-- [/5] hyperparameter tuning
+- [/5] to do tf-model-specific Feature Selection, experiment adding a attention layer
+  - https://towardsdatascience.com/create-your-own-custom-attention-layer-understand-all-flavours-2201b5e8be9e
 
-- [/5] modularize get_txt_emb_layer(), follow by txt_post_processing such as LSTM, RNN, seq2seq, BERT, https://www.tensorflow.org/text/tutorials/classify_text_with_bert
+  - https://www.tensorflow.org/api_docs/python/tf/keras/layers/Attention
 
-- [/5] TwoTower structure: concat the emb of txt_cols, cnt_cols, cat_cols for user and item, respectively. It will be useful in a hybrid recommendation system.
+  - https://analyticsindiamag.com/a-beginners-guide-to-using-attention-layer-in-neural-networks/
 
-- [/5] emb img_cols
+- [/5] To build a two-tower structure (one for User, another for Item) for a hybrid recommendation system, concat the emb of txt_cols, cnt_cols, cat_cols for user and item, respectively.
 
-- [/5] concat emb of cnt + cat + txt + img, integrate info in smart ways
+- [/5] Instead of making point-prediction, make interval-prediction with a confidential interval. https://mapie.readthedocs.io/en/latest/index.html
 
 **References & Credits**:
 
